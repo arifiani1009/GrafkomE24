@@ -4,8 +4,15 @@ function main(){
 
     var vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines), gl.STATIC_DRAW);
+
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+
+    var indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
     var vertexShaderCode = document.getElementById("vertexShaderCode").text;
 
@@ -33,24 +40,31 @@ function main(){
 
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     var aPos = gl.getAttribLocation(program, "aPosition");
-    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
+    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(aPos);
 
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     var aColor = gl.getAttribLocation(program, "aColor");
-    gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+    gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(aColor);
 
-    var dx = 0, dy = 0;
+    var angle = 0;
     function render(time){
         if (!freeze){
-            dy += 0.01;
+            angle += 0.01;
         }
-        translation(dx, dy, 0.0, gl, program);
+        rotateX(angle, gl, program);
+
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
 
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clearDepth(1.0);
+
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.drawElements(gl.LINES, indices.length, gl.UNSIGNED_SHORT, 0);
         window.requestAnimationFrame(render);
     }
 
