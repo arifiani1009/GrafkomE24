@@ -4,7 +4,7 @@ function main(){
 
     var vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubes), gl.STATIC_DRAW);
 
     var colorBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
@@ -65,7 +65,7 @@ function main(){
     )
 
     glMatrix.mat4.lookAt(viewMatrix,
-        [0.0, 0.0, 2.0], //posisi kamera
+        [0.0, 0.0, 3.0], //posisi kamera
         [0.0, 0.0, -2.0], //kemana kamera menghadap
         [0.0, 1.0, 0.0] //kemana arah atas kamera
     );
@@ -89,7 +89,7 @@ function main(){
         gl.uniformMatrix4fv(Mmatrix, false, modMatrix);
     
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.drawElements(gl.LINES, indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
         window.requestAnimationFrame(render);
     }
 
