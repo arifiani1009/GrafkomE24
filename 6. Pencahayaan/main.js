@@ -65,6 +65,8 @@ function main(){
         }
     `;
 
+    
+
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fragmentShader, fragmentShaderCode);
     gl.compileShader(fragmentShader);    
